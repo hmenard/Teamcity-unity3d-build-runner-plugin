@@ -45,6 +45,20 @@ public class UnityRunner {
     List<String> getArgs() {
         List<String> args = new ArrayList<String>();
 
+        if (!this.configuration.buildTarget.equals(""))
+        {
+          args.add("-buildTarget");
+          args.add(this.configuration.buildTarget);
+        }
+
+        if (this.configuration.runUnitTests)
+        {
+          args.add("-runEditorTests");
+          args.add("-editorTestsResultFile");
+          args.add(this.configuration.projectPath);
+        }
+
+
         if (configuration.batchMode)
             args.add("-batchmode");
 

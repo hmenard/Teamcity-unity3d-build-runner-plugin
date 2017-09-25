@@ -29,6 +29,8 @@ public class UnityRunnerConfiguration {
     final String unityExecutablePath;
     final boolean quit;
     final boolean batchMode;
+    final boolean runUnitTests;
+
     final boolean noGraphics;
     final boolean clearBefore;
     final boolean cleanAfter;
@@ -42,6 +44,7 @@ public class UnityRunnerConfiguration {
     final String extraOpts;
     final String unityVersion;
     final String detectedUnityVersionPath;
+    final String buildTarget;
 
     final Platform platform;
     final java.io.File cleanedLogPath;
@@ -69,6 +72,8 @@ public class UnityRunnerConfiguration {
         platform = detectPlatform(agentConfiguration);
         quit = Parameters.getBoolean(runnerParameters, PluginConstants.PROPERTY_QUIT);
         batchMode = Parameters.getBoolean(runnerParameters, PluginConstants.PROPERTY_BATCH_MODE);
+        runUnitTests = Parameters.getBoolean(runnerParameters, PluginConstants.PROPERTY_RUN_UNIT_TESTS);
+
         noGraphics = Parameters.getBoolean(runnerParameters, PluginConstants.PROPERTY_NO_GRAPHICS);
         projectPath = FilenameUtils.separatorsToSystem(
                 Parameters.getString(runnerParameters, PluginConstants.PROPERTY_PROJECT_PATH));
@@ -96,6 +101,7 @@ public class UnityRunnerConfiguration {
         buildPath = FilenameUtils.separatorsToSystem(
                 Parameters.getString(runnerParameters, PluginConstants.PROPERTY_BUILD_PATH));
         extraOpts = Parameters.getString(runnerParameters, PluginConstants.PROPERTY_BUILD_EXTRA);
+        buildTarget = Parameters.getString(runnerParameters, PluginConstants.PROPERTY_BUILD_TARGET);
 
         clearBefore = Parameters.getBoolean(runnerParameters, PluginConstants.PROPERTY_CLEAR_OUTPUT_BEFORE);
         cleanAfter = Parameters.getBoolean(runnerParameters, PluginConstants.PROPERTY_CLEAN_OUTPUT_AFTER);

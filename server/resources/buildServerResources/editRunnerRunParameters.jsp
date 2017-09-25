@@ -60,6 +60,19 @@
 
 <tr>
     <th>
+        <label for="argument.">Run unit tests
+    </th>
+    <td>
+         <props:checkboxProperty name="argument.run_unit_tests"/>
+         <span class="error" id="error_argument.run_unit_tests"></span>
+         <span class="smallNote">
+             Run Unit Tests.
+         </span>
+    </td>
+</tr>
+
+<tr>
+    <th>
         <label for="argument.no_graphics">No graphics: </label>
     </th>
     <td>
@@ -125,6 +138,18 @@
 
 <tr>
     <th>
+        <label for="argument.build_target">Build Target: </label>
+    </th>
+    <td>
+        <props:textProperty name="argument.build_target" style="width:32em;"/>
+        <span class="smallNote">
+             Add build target to launch with.
+        </span>
+    </td>
+<tr>
+
+<tr>
+    <th>
         <label for="argument.build_path">Build path: </label>
     </th>
     <td>
@@ -135,9 +160,6 @@
         </span>
     </td>
 </tr>
-
-
-
 
 <tr>
     <th>

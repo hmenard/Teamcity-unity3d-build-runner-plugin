@@ -12,6 +12,7 @@ public interface PluginConstants {
 
     final String PROPERTY_UNITY_EXECUTABLE_PATH = "unity.executable";
     final String PROPERTY_BATCH_MODE = "argument.batch_mode";
+    final String PROPERTY_RUN_UNIT_TESTS = "argument.run_unit_tests";
     final String PROPERTY_EXECUTE_METHOD = "argument.execute_method";
     final String PROPERTY_NO_GRAPHICS = "argument.no_graphics";
     final String PROPERTY_QUIT = "argument.quit";
@@ -21,6 +22,7 @@ public interface PluginConstants {
     final String PROPERTY_BUILD_PLAYER = "argument.build_player";
     final String PROPERTY_BUILD_EXTRA = "argument.build_extra";
     final String PROPERTY_UNITY_VERSION = "argument.unity_version";
+    final String PROPERTY_BUILD_TARGET = "argument.build_target";
 
     final String PROPERTY_CLEAR_OUTPUT_BEFORE = "argument.clear_output_before";
     final String PROPERTY_CLEAN_OUTPUT_AFTER = "argument.clean_output_after";

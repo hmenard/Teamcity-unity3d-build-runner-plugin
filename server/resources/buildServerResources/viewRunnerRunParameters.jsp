@@ -32,6 +32,10 @@
 </div>
 
 <div class="parameter">
+  Unit Tests: <strong><props:displayValue name="argument.run_unit_tests" /></strong>
+</div>
+
+<div class="parameter">
   No Graphics: <strong><props:displayValue name="argument.no_graphics" /></strong>
 </div>
 
@@ -72,6 +76,9 @@
 </div>
 
 
+<div class="parameter">
+  Build Target: <strong><props:displayValue name="argument.build_target" /></strong>
+</div>
 
 <div class="parameter">
   Clear Output Before: <strong><props:displayValue name="argument.clear_output_before" /></strong>

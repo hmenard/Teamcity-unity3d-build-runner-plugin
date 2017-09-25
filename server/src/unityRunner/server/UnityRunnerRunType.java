@@ -67,6 +67,8 @@ public class UnityRunnerRunType extends RunType {
         describeParam("Output directory", parameters.get(PluginConstants.PROPERTY_BUILD_PATH), sb);
         describeParam("Extra options", parameters.get(PluginConstants.PROPERTY_BUILD_EXTRA), sb);
         describeParam("Execute Method", parameters.get(PluginConstants.PROPERTY_EXECUTE_METHOD), sb);
+        describeParam("Build target", parameters.get(PluginConstants.PROPERTY_BUILD_TARGET), sb);
+        describeParam("Run unit tests", parameters.get(PluginConstants.PROPERTY_RUN_UNIT_TESTS), sb);
 
         String logIgnore = parameters.get(PluginConstants.PROPERTY_LOG_IGNORE);
         if (logIgnore != null && "true".equals(logIgnore)) {
@@ -135,6 +137,7 @@ public class UnityRunnerRunType extends RunType {
         Map<String,String> defaults = new HashMap<String, String>();
 
         defaults.put(PluginConstants.PROPERTY_QUIT, "true");
+        defaults.put(PluginConstants.PROPERTY_RUN_UNIT_TESTS, "false");
         defaults.put(PluginConstants.PROPERTY_BATCH_MODE, "true");
         defaults.put(PluginConstants.PROPERTY_CLEAR_OUTPUT_BEFORE, "true");
         defaults.put(PluginConstants.PROPERTY_CLEAN_OUTPUT_AFTER, "true");
@@ -173,4 +176,3 @@ public class UnityRunnerRunType extends RunType {
 
         return requirements;
     }
-}
