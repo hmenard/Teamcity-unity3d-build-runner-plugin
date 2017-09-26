@@ -161,18 +161,22 @@ public class UnityRunnerRunType extends RunType {
         requirements.addAll(super.getRunnerSpecificRequirements(runParameters));
 
         String unityVersion = runParameters.get(PluginConstants.PROPERTY_UNITY_VERSION);
+
         if (unityVersion == null || unityVersion.isEmpty()) {
             // any version of unity will do
             requirements.add(
-                new Requirement(PluginConstants.CONFIGPARAM_UNITY_LATEST_VERSION, "", RequirementType.EXISTS)
+                    new Requirement(PluginConstants.CONFIGPARAM_UNITY_LATEST_VERSION, "", RequirementType.EXISTS)
             );
         } else {
-            // a specific version of Unity needs to be installed
-            String unityVersionParameter = PluginConstants.CONFIGPARAM_UNITY_BASE_VERSION + unityVersion;
-            requirements.add(
-                new Requirement(unityVersionParameter, "", RequirementType.EXISTS)
-            );
+            //TODO Dynamic parameters can't be resolved at the moment, so if it contains a parameter that needs resolve, resolve it later
+            if (!unityVersion.contains("%"))
+            {
+                // a specific version of Unity needs to be installed
+                String unityVersionParameter = PluginConstants.CONFIGPARAM_UNITY_BASE_VERSION + unityVersion;
+                requirements.add(new Requirement(unityVersionParameter, "", RequirementType.EXISTS));
+            }
         }
 
         return requirements;
     }
+}
