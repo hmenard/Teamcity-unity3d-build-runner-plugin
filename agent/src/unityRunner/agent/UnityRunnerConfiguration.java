@@ -83,11 +83,22 @@ public class UnityRunnerConfiguration {
                 Parameters.getString(runnerParameters, PluginConstants.PROPERTY_UNITY_EXECUTABLE_PATH));
 
         unityVersion = Parameters.getString(runnerParameters, PluginConstants.PROPERTY_UNITY_VERSION);
+
         if (isSet(unityVersion)) {
-            // look up the path to the specified unity version in Agent Configuration Parameters
-            detectedUnityVersionPath = Parameters.getString(
+            String cachedDetectedUnityVersionPath = Parameters.getString(
                     agentConfiguration.getConfigurationParameters(),
                     "unity." + unityVersion);
+            if (cachedDetectedUnityVersionPath != null)
+            {
+                detectedUnityVersionPath = cachedDetectedUnityVersionPath;
+            }
+            else
+            {
+                // If the version can't be found, revert on the latest unity version
+                detectedUnityVersionPath = Parameters.getString(
+                        agentConfiguration.getConfigurationParameters(),
+                        PluginConstants.CONFIGPARAM_UNITY_LATEST_VERSION);
+            }
         } else {
             // default to use 'latest' version of unity that was previously found
             detectedUnityVersionPath = Parameters.getString(

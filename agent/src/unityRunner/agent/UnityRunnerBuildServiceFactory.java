@@ -169,7 +169,7 @@ public class UnityRunnerBuildServiceFactory implements CommandLineBuildServiceFa
             }
 
             /**
-             * detect if there is a Mac Unity Editor installed in the given location
+             * Detect if there is a Mac Unity Editor installed in the given location
              * @param possibleUnityLocation location for Unity to be installed
              * @param foundUnityVersions map to add the (version,path) data to if found
              */
@@ -178,8 +178,12 @@ public class UnityRunnerBuildServiceFactory implements CommandLineBuildServiceFa
                     Path unityExecutable = possibleUnityLocation.resolve(UnityRunnerConfiguration.MacUnityExecutableRelativePath);
                     Path configFilePath = possibleUnityLocation.resolve(UnityRunnerConfiguration.MacPlistRelativePath);
 
+                    // Version from Mac come from the CFBundleVersion
                     XMLPropertyListConfiguration config = new XMLPropertyListConfiguration(configFilePath.toFile());
-                    String version = config.getString("CFBundleVersion");
+                    String version = config.getString("CFBundleVersion"); // 2017.1.1f1
+
+                    // Strip version of f1 at the end so it's the same behaviour as Windows
+                    version = version.split("[fp]")[0];
 
                     if (version != null && unityExecutable.toFile().exists()) {
                         Loggers.AGENT.info("Found unity version = " + version + " at: " + unityExecutable.toString());
@@ -201,7 +205,6 @@ public class UnityRunnerBuildServiceFactory implements CommandLineBuildServiceFa
                         // found Unity.exe - read version
                         String version = FileVersionInfo.getShortVersionNumber(unityExecutable.toString());
 
-                        // TODO: test this - if it doesn't work then look at path, or long version number?
                         if (version != null) {
                             Loggers.AGENT.info("Found unity version = " + version + " at: " + unityExecutable.toString());
                             foundUnityVersions.put(version, unityExecutable.toString());
