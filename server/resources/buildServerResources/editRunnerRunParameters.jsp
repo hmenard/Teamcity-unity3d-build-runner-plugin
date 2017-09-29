@@ -13,7 +13,7 @@
         <props:textProperty name="argument.unity_version" style="width:32em;"/>
         <span class="error" id="error_argument.unity_version"></span>
         <span class="smallNote">
-             Specify a version of Unity to use - e.g. 5.1.2f1. If left blank the latest version installed will be used.
+             Specify a version of Unity to use - e.g. 2017.1.1. Autodetect version in the project if blank. If version not found, run with latest.
         </span>
     </td>
 </tr>

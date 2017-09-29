@@ -4,8 +4,10 @@ import jetbrains.buildServer.agent.AgentRunningBuild;
 import jetbrains.buildServer.agent.BuildAgentConfiguration;
 import jetbrains.buildServer.log.Loggers;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.FileUtils;
 import unityRunner.common.PluginConstants;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -78,33 +80,12 @@ public class UnityRunnerConfiguration {
         projectPath = FilenameUtils.separatorsToSystem(
                 Parameters.getString(runnerParameters, PluginConstants.PROPERTY_PROJECT_PATH));
 
-        // executable path CAN be overridden
         unityExecutablePath = FilenameUtils.separatorsToSystem(
                 Parameters.getString(runnerParameters, PluginConstants.PROPERTY_UNITY_EXECUTABLE_PATH));
 
         unityVersion = Parameters.getString(runnerParameters, PluginConstants.PROPERTY_UNITY_VERSION);
 
-        if (isSet(unityVersion)) {
-            String cachedDetectedUnityVersionPath = Parameters.getString(
-                    agentConfiguration.getConfigurationParameters(),
-                    "unity." + unityVersion);
-            if (cachedDetectedUnityVersionPath != null)
-            {
-                detectedUnityVersionPath = cachedDetectedUnityVersionPath;
-            }
-            else
-            {
-                // If the version can't be found, revert on the latest unity version
-                detectedUnityVersionPath = Parameters.getString(
-                        agentConfiguration.getConfigurationParameters(),
-                        PluginConstants.CONFIGPARAM_UNITY_LATEST_VERSION);
-            }
-        } else {
-            // default to use 'latest' version of unity that was previously found
-            detectedUnityVersionPath = Parameters.getString(
-                    agentConfiguration.getConfigurationParameters(),
-                    PluginConstants.CONFIGPARAM_UNITY_LATEST_VERSION);
-        }
+        detectedUnityVersionPath = GetUnityVersionPath(agentConfiguration);
 
         lineListPath = FilenameUtils.separatorsToSystem(Parameters.getString(runnerParameters, PluginConstants.PROPERTY_LINELIST_PATH));
         executeMethod = Parameters.getString(runnerParameters, PluginConstants.PROPERTY_EXECUTE_METHOD);
@@ -129,13 +110,94 @@ public class UnityRunnerConfiguration {
 
     }
 
+    /**
+     * This function will return the path of unity in the following order:
+     *      1a. A specific version of Unity was specified. It will try to locate that version.
+     *      2b. If no unity version is specified, it will look autodetect the version to use from the unity project
+     *      2. If that failed, it will default to the latest version installed on the agent
+     * @param agentConfiguration
+     * @return
+     */
+    String GetUnityVersionPath(BuildAgentConfiguration agentConfiguration)
+    {
+        if (isSet(unityVersion)) {
+            String cachedDetectedUnityVersionPath = Parameters.getString(
+                    agentConfiguration.getConfigurationParameters(),
+                    "unity." + unityVersion);
+            if (cachedDetectedUnityVersionPath != null)
+            {
+                return cachedDetectedUnityVersionPath;
+            }
+        }
+        else
+        {
+            String autodetectUnityVersion = GetAutoDetectedVersion();
+            String autoDetectedUnityVersionPath = Parameters.getString(
+                    agentConfiguration.getConfigurationParameters(),
+                    "unity." + autodetectUnityVersion);
+
+            if (isSet(autoDetectedUnityVersionPath))
+            {
+                return autoDetectedUnityVersionPath;
+            }
+
+            if (isSet(autodetectUnityVersion))
+            {
+                Loggers.AGENT.error("Could not launch on detected unity version " + autodetectUnityVersion +  ". Fallback on latest version .");
+            }
+            else
+            {
+                Loggers.AGENT.error("Auto detection failed. Launching with latest unity version instead.");
+            }
+        }
+
+        // default to use 'latest' version of unity that was previously found
+        return Parameters.getString(
+                agentConfiguration.getConfigurationParameters(),
+                PluginConstants.CONFIGPARAM_UNITY_LATEST_VERSION);
+    }
+
+    private String GetAutoDetectedVersion()
+    {
+        if (isSet(projectPath))
+        {
+            Loggers.AGENT.error("GetAutoDetectedVersion " + projectPath);
+
+            String projectVersionFilePath = projectPath + File.separator + "ProjectSettings" + File.separator + "ProjectVersion.txt";
+            try
+            {
+                File projectVersionFile = new File(projectVersionFilePath);
+                if (projectVersionFile.exists())
+                {
+                    String projectVersionString = FileUtils.readFileToString(projectVersionFile);
+                    projectVersionString = projectVersionString.split(":")[1].trim();
+                    projectVersionString = projectVersionString.split("[fp]")[0];
+                    return projectVersionString;
+                }
+                else
+                {
+                    Loggers.AGENT.error("Cannot find project version file " + projectVersionFilePath + ".");
+                }
+            }
+            catch (Exception e)
+            {
+                Loggers.AGENT.error(e);
+            }
+        }
+        else
+        {
+            Loggers.AGENT.error("Project path is not set. Can't autodetect unity version.");
+        }
+
+        return null;
+    }
 
     /**
      * get path to unity executable
      * @return path to unity executable
      */
     String getUnityPath() {
-        //  executable path can be overridden
+        //  if the executable path is explicit, use it without asking any question
         if (isSet(unityExecutablePath)) {
             return unityExecutablePath;
         }
@@ -218,9 +280,10 @@ public class UnityRunnerConfiguration {
 
         switch (platform) {
             case Windows:
-                // on Windows we have potentially two locations for 32 and 64 bit apps
+                // Search location (64 and 32 bits)
                 addLocation(System.getenv("ProgramFiles"), locations);
                 addLocation(System.getenv("%programfiles% (x86)"), locations);
+                addLocation(System.getenv("ProgramW6432"), locations);
 
             case Mac:
                 // on Mac there is only one location for apps.

@@ -32,10 +32,12 @@ public class UnityRunner {
      */
     @NotNull
     String getExecutable() {
-        logMessage(String.format("Unity version requested: %s ", configuration.unityVersion));
-        logMessage(String.format("Unity executable path: %s ", configuration.getUnityPath()));
+        String unityPath = configuration.getUnityPath();
 
-        return configuration.getUnityPath();
+        logMessage(String.format("Unity version requested: %s ", configuration.unityVersion));
+        logMessage(String.format("Unity executable path: %s ", unityPath));
+
+        return unityPath;
     }
 
     /**
